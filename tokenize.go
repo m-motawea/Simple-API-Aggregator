@@ -1,10 +1,12 @@
 package aggregator
 
 import (
-	"github.com/m-motawea/aggregator/parsers"
-	"github.com/mie00/tokenizer"
 	"net/http"
 	"strings"
+
+	"github.com/davecgh/go-spew/spew"
+	"github.com/m-motawea/aggregator/parsers"
+	"github.com/mie00/tokenizer"
 )
 
 var (
@@ -37,10 +39,10 @@ func RegsiterCall(r http.Request, body []byte, response []byte, statusCode int) 
 		statusCode: statusCode,
 	}
 	a.prepare()
-	url := a.tokenizeURL()
+	url, qs := a.tokenizeURL()
 	b := a.tokenizeBody()
 	res := a.tokenizeResponse()
-	resource.addChild(url, b, a.method, res, a.statusCode, map[string]string{}, a.queryParameters)
+	resource.addChild(url, b, a.method, res, a.statusCode, map[string]string{}, qs)
 	baseUrl = a.baseURL
 }
 
@@ -57,25 +59,24 @@ func (call *APICall) prepare() {
 	call.method = call.request.Method
 	call.line = call.request.URL.Path
 	call.baseURL = call.request.Host
-	q := call.request.URL.Query()
-	for k, v := range q {
-		if len(v) >= 1 {
-			// TODO: handle multiple query parameters
-			call.queryParameters[k] = v[0]
-		}
-	}
-	call.fullPath = call.baseURL + call.line
+	call.fullPath = "http://" + call.baseURL + call.request.URL.String()
 }
 
-func (call *APICall) tokenizeURL() string {
+func (call *APICall) tokenizeURL() (string, map[string]string) {
 	url := tokenizer.TokenizeString(call.fullPath)
+	spew.Dump(call.fullPath, url)
 	tokenizedLines := strings.Split(url, call.baseURL)
-	if len(tokenizedLines) > 1 {
-		line := tokenizedLines[1]
-		return strings.Split(line, "?")[0]
-	} else {
-		return "/"
+	line := strings.SplitN(tokenizedLines[1], "?", 2)
+	u := line[0]
+	qs := make(map[string]string)
+	if len(line) == 2 {
+		for _, kv := range strings.Split(line[1], "&") {
+			if kva := strings.SplitN(kv, "=", 2); len(kva) == 2 {
+				qs[kva[0]] = kva[1]
+			}
+		}
 	}
+	return u, qs
 }
 
 func (call *APICall) tokenizeBody() string {
