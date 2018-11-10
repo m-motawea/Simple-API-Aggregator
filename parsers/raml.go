@@ -1,6 +1,8 @@
 package parsers
 
 import (
+	"fmt"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -16,12 +18,15 @@ type ResourceRaml struct {
 
 func (parser *RamlParser) Parse(root ResourceInterface) []byte {
 	resourceMap := root.GenerateMap()
-	resourceMap["Title"] = parser.Title
-	resourceMap["baseUri"] = parser.BaseURI
-	resourceMap["version"] = parser.Version
 	headYML, err := yaml.Marshal(resourceMap)
 	if err != nil {
 		return nil
 	}
-	return headYML
+	return []byte(fmt.Sprintf(`
+#%%RAML 1.0
+title: %s
+version: %s
+baseUri: %s
+%s
+`, parser.Title, parser.BaseURI, parser.Version, headYML))
 }
