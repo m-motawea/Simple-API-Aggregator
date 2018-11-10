@@ -3,7 +3,6 @@ package aggregator
 import (
 	"fmt"
 	"github.com/m-motawea/aggregator/parsers"
-	"os"
 	"strings"
 )
 

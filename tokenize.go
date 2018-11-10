@@ -46,7 +46,7 @@ func GetRaml() []byte {
 		BaseURI: baseUrl,
 		Version: "1.0",
 	}
-	return resource.GenerateSpecs(p)
+	return resource.GenerateSpecs(&p)
 }
 
 func (call *APICall) prepare() {

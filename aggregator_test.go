@@ -91,6 +91,5 @@ func TestAggregator(t *testing.T) {
 	parser.Title = "First API"
 	parser.BaseURI = "http://myfirstraml.com"
 	parser.Version = "v1"
-	f, _ := os.Create("/home/maged/test_raml.yml")
-	root.GenerateSpecs(parser, f)
+	root.GenerateSpecs(parser)
 }
