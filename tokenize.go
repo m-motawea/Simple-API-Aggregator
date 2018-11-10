@@ -8,8 +8,12 @@ import (
 )
 
 var (
-	resource = Resource{}
-	baseUrl  string
+	resource = Resource{
+		line:        "/",
+		prefix:      "",
+		childrenMap: make(map[string]*Resource),
+	}
+	baseUrl string
 )
 
 type APICall struct {
