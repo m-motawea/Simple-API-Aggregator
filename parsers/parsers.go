@@ -1,11 +1,7 @@
 package parsers
 
-import (
-	"os"
-)
-
 type Parser interface {
-	Parse(r ResourceInterface, f *os.File) []byte
+	Parse(r ResourceInterface) []byte
 }
 
 type ResourceInterface interface {

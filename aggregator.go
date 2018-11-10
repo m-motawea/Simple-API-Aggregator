@@ -117,8 +117,8 @@ func (r *Resource) addChild(line string, body string, method string, response st
 	}
 }
 
-func (r *Resource) GenerateSpecs(parser parsers.Parser, f *os.File) []byte {
-	return parser.Parse(r, f)
+func (r *Resource) GenerateSpecs(parser parsers.Parser) []byte {
+	return parser.Parse(r)
 }
 
 func (r *Resource) GenerateMap() map[string]interface{} {

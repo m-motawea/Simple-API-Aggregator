@@ -2,7 +2,6 @@ package parsers
 
 import (
 	"gopkg.in/yaml.v2"
-	"os"
 )
 
 type RamlParser struct {
@@ -15,7 +14,7 @@ type ResourceRaml struct {
 	prefix string
 }
 
-func (parser *RamlParser) Parse(root ResourceInterface, f *os.File) []byte {
+func (parser *RamlParser) Parse(root ResourceInterface) []byte {
 	resourceMap := root.GenerateMap()
 	resourceMap["Title"] = parser.Title
 	resourceMap["baseUri"] = parser.BaseURI
@@ -24,6 +23,5 @@ func (parser *RamlParser) Parse(root ResourceInterface, f *os.File) []byte {
 	if err != nil {
 		return nil
 	}
-	f.Write(headYML)
 	return headYML
 }
