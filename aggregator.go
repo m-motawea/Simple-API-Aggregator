@@ -2,8 +2,9 @@ package aggregator
 
 import (
 	"fmt"
-	"github.com/m-motawea/aggregator/parsers"
 	"strings"
+
+	"github.com/m-motawea/aggregator/parsers"
 )
 
 type codeToResponse map[int]string
@@ -49,29 +50,29 @@ func (r *Resource) addChild(line string, body string, method string, response st
 	var tmpResource *Resource
 	i := 1
 	for i < loopLen {
-		child, ok := parentResource.childrenMap[prefixes[i]]
+		child, ok := parentResource.childrenMap["/"+prefixes[i]]
 		if !ok {
 			tmpResource = parentResource
 			parentResource = new(Resource)
-			parentResource.prefix = prefixes[i]
+			parentResource.prefix = "/" + prefixes[i]
 			parentResource.line = strings.Join(prefixes[:i], "/")
 			parentResource.childrenMap = make(map[string]*Resource)
-			if strings.Contains(prefixes[i], "{") {
+			if strings.Contains("/"+prefixes[i], "{") {
 				parentResource.isItem = true
 			} else {
 				parentResource.isItem = false
 			}
-			tmpResource.childrenMap[prefixes[i]] = parentResource
+			tmpResource.childrenMap["/"+prefixes[i]] = parentResource
 		} else {
 			parentResource = child
 		}
 		i++
 	}
-	c, ok := parentResource.childrenMap[prefixes[i]]
+	c, ok := parentResource.childrenMap["/"+prefixes[i]]
 	if !ok {
 		c := new(Resource)
 		c.line = line
-		c.prefix = prefixes[i]
+		c.prefix = "/" + prefixes[i]
 		c.childrenMap = make(map[string]*Resource)
 		c.methodToBody = make(map[string]string)
 		c.methodToBody[method] = body
@@ -92,7 +93,7 @@ func (r *Resource) addChild(line string, body string, method string, response st
 		} else {
 			c.isItem = false
 		}
-		parentResource.childrenMap[prefixes[i]] = c
+		parentResource.childrenMap["/"+prefixes[i]] = c
 	} else {
 
 		currentParams, ok := c.queryParameters[method]
