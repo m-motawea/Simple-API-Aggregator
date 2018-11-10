@@ -8,16 +8,18 @@ import (
 
 type APICall struct {
 	request  http.Request
-	response http.ResponseWriter
+	response []byte
 	body     []byte
 	// headers         map[string]string
 	queryParameters map[string]string
 	baseURL         string
 	line            string
 	fullPath        string
+	method          string
 }
 
 func (call *APICall) prepare() {
+	call.method = call.request.Method
 	call.line = call.request.URL.Path
 	call.baseURL = call.request.Host
 	q := call.request.URL.Query()
@@ -43,5 +45,10 @@ func (call *APICall) tokenizeURL() string {
 
 func (call *APICall) tokenizeBody() string {
 	body := tokenizer.TokenizeString(string(call.body))
+	return body
+}
+
+func (call *APICall) tokenizeResponse() string {
+	body := tokenizer.TokenizeString(string(call.response))
 	return body
 }
