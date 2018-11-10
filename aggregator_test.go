@@ -2,7 +2,7 @@ package aggregator
 
 import (
 	"fmt"
-	"github.com/aggregator/parsers"
+	"github.com/m-motawea/aggregator/parsers"
 	"io/ioutil"
 	"math/rand"
 	"os"
